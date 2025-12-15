@@ -14,15 +14,12 @@ def root_redirect(request):
 
 @login_required
 def dashboard(request):
-    """Displays active workouts and overall completion statistics."""
-    
-    # 1. Fetch upcoming/active workouts for the current user
+
     active_workouts = Workout.objects.filter(
         user=request.user, 
         scheduled_date__gte=date.today()
     ).order_by('scheduled_date')
     
-    # 2. Logic for Report (All time)
     total_workouts = Workout.objects.filter(user=request.user).count()
     completed_workouts = Workout.objects.filter(user=request.user, is_completed=True).count()
     
@@ -86,7 +83,6 @@ def workout_delete(request, pk):
 @login_required
 @require_POST
 def toggle_exercise_done(request, pk):
-    """API endpoint to toggle the 'is_done' status of a WorkoutExercise."""
     try:
         we = WorkoutExercise.objects.get(
             pk=pk, 
@@ -96,7 +92,6 @@ def toggle_exercise_done(request, pk):
         we.is_done = not we.is_done
         we.save()
 
-        # Update parent workout status
         parent_workout = we.workout
         all_done = not parent_workout.exercises.filter(is_done=False).exists()
         

@@ -66,8 +66,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'workout_tracker_db', 
-        'USER': os.getenv('DB_USER', 'root'),     # CHANGE THIS
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Erfan.judo8'), # CHANGE THIS
+        'USER': os.getenv('DB_USER', 'YOUR_DB_INFORMATION'),     # CHANGE THIS
+        'PASSWORD': os.getenv('DB_PASSWORD', 'YOUR_DB_PASSWORD'), # CHANGE THIS
         'HOST': os.getenv('DB_HOST', 'localhost'),
         'PORT': '3306',
         'OPTIONS': {

@@ -4,7 +4,6 @@ from django.contrib.auth.views import LoginView, LogoutView
 from .forms import CustomUserCreationForm
 from django.contrib import messages
 
-# Custom Signup View
 def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -13,7 +12,6 @@ def signup_view(request):
             messages.success(request, 'Registration successful. Please log in.')
             return redirect('login')
         else:
-            # Add form errors to messages for display
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
@@ -22,7 +20,6 @@ def signup_view(request):
     
     return render(request, 'accounts/signup.html', {'form': form})
 
-# Login/Logout Views
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
     redirect_authenticated_user = True
