@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.DS_Store
+
+# Virtual Environment
+venv/
+.venv/
+env/
+/local_settings.py
+
+# Django specific
+*.sqlite3
+/media
+/static
+
+# System files
+.vscode/
+.idea/
