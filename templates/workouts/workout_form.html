@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if is_update %}Edit Workout: {{ workout.title }}{% else %}New Workout{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4">{% if is_update %}Edit Workout: {{ workout.title }}{% else %}Schedule a New Workout{% endif %}</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="card mb-4 p-4">
+                <h5 class="card-title">Workout Details</h5>
+                {{ form|crispy }}
+            </div>
+
+            <div class="card p-4">
+                <h5 class="card-title">Exercises</h5>
+                {{ formset.management_form }}
+                
+                <div id="formset-container">
+                    {% for exercise_form in formset %}
+                        <div class="exercise-form-row mb-3 p-3 border rounded" style="background-color: #f8f9fa;">
+                            {% if exercise_form.instance.pk %}
+                                <p class="text-muted">Editing Existing Exercise</p>
+                            {% endif %}
+                            
+                            {{ exercise_form.id }}
+                            {{ exercise_form.exercise|as_crispy_field }}
+                            
+                            <div class="row">
+                                <div class="col-4">{{ exercise_form.sets|as_crispy_field }}</div>
+                                <div class="col-4">{{ exercise_form.reps|as_crispy_field }}</div>
+                                <div class="col-4">{{ exercise_form.weight|as_crispy_field }}</div>
+                            </div>
+                            
+                            {{ exercise_form.user_remarks|as_crispy_field }}
+
+                            {% if exercise_form.instance.pk %}
+                                {{ exercise_form.DELETE|as_crispy_field }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <button type="button" class="btn btn-sm btn-secondary mt-3" id="add-exercise">Add Exercise</button>
+            </div>
+
+            <button type="submit" class="btn btn-success mt-4">{% if is_update %}Update Workout{% else %}Create Workout{% endif %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addExerciseButton = document.getElementById('add-exercise');
+        const container = document.getElementById('formset-container');
+        const totalFormsInput = document.getElementById('id_exercises-TOTAL_FORMS');
+
+        // This is the HTML block for a blank new form
+        const emptyFormTemplate = `
+            <div class="exercise-form-row mb-3 p-3 border rounded" style="background-color: #f8f9fa;">
+                {{ formset.empty_form|crispy }}
+            </div>
+        `;
+
+        addExerciseButton.addEventListener('click', function() {
+            const currentTotalForms = parseInt(totalFormsInput.value);
+            
+            // Get the raw HTML of the empty form and replace the '__prefix__' placeholder 
+            // with the current total form count.
+            const newFormHtml = emptyFormTemplate.replace(/__prefix__/g, currentTotalForms);
+            
+            // Insert the new form HTML into the container
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = newFormHtml;
+            container.appendChild(tempDiv.firstChild);
+
+            // Increment the total form count
+            totalFormsInput.value = currentTotalForms + 1;
+        });
+    });
+</script>
+{% endblock %}
